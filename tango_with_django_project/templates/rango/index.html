@@ -25,7 +25,7 @@
 				{% if pages %}
 				<ul>
 				{% for page in pages %}
-				 <li><a href="/rango/page/{{ page.slug }}">{{ page.title }}</a></li>
+				 <li><a href="{{ page.url }}">{{ page.title }}</a></li>
 				 {% endfor %}
 				 </ul>
 				{% else %}
@@ -34,6 +34,7 @@
 				</p>
   <div>
     <a href="/rango/about/">About Rango</a><br />
+    <a href="/rango/add_category/">Add a New Category</a><br />
     <img src="{% static "images/rango.jpg" %}" alt="Picture of Rango" />
   </div>
 </body>
