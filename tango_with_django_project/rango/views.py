@@ -37,28 +37,44 @@ def register(request):
     return render(request,'rango/register.html',{'user_form': user_form,'profile_form': profile_form,'registered': registered})
 
 def index(request):
+    request.session.set_test_cookie()
     category_list = Category.objects.order_by('-likes')[:5]
     page_list = Page.objects.order_by('-views')[:5]
     context_dict = {'categories': category_list, 'pages': page_list}
+
+    visitor_cookie_handler(request)
+    context_dict['visits'] = request.session['visits']
+
     response = render(request, 'rango/index.html', context_dict)
-    visitor_cookie_handler(request, response)
     return response
 
-def visitor_cookie_handler(request, response):
+def get_server_side_cookie(request, cookie, default_val=None):
+    val = request.session.get(cookie)
+    if not val:
+        val = default_val
+    return val
+
+def visitor_cookie_handler(request):
     visits = int(request.COOKIES.get('visits', '1'))
     last_visit_cookie = request.COOKIES.get('last_visit', str(datetime.now()))
     last_visit_time = datetime.strptime(last_visit_cookie[:-7],'%Y-%m-%d %H:%M:%S')
     if (datetime.now() - last_visit_time).days > 0:
         visits = visits + 1
-        response.set_cookie('last_visit', str(datetime.now()))
+        request.session['last_visit'] = str(datetime.now())
     else:
-        response.set_cookie('last_visit', last_visit_cookie)
-        response.set_cookie('visits', visits)
+        request.session['last_visit'] = last_visit_cookie
+    request.session['visits'] = visits
 
 def about(request):
-    print(request.method)
-    print(request.user)
-    return render(request, 'rango/about.html', {})
+        print(request.method)
+        print(request.user)
+        request.session.set_test_cookie()
+        context_dict = {}
+        visitor_cookie_handler(request)
+        context_dict['visits'] = request.session['visits']
+
+        response = render(request, 'rango/about.html', context_dict)
+        return response
 
 
 def show_category(request, category_name_slug):
