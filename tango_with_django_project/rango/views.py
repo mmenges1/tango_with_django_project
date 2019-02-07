@@ -151,9 +151,12 @@ def user_login(request):
     else:
         return render(request, 'rango/login.html', {})
 
-@login_required
+
 def restricted(request):
-    return HttpResponse("Since you're logged in, you can see this text!")
+    if not request.user.is_authenticated():
+        return render(request, 'rango/login.html', {})
+    else:
+        return HttpResponse("Since you're logged in, you can see this text!")
 
 @login_required
 def user_logout(request):

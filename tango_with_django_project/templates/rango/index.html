@@ -6,8 +6,9 @@
 {% endblock %}
 
 {% block body_block %}
-<h1>Rango says...</h1>
+<h1>Rango -</h1>
 <div>
+  <p>Rango says...</p>
 {% if user.is_authenticated %}
   howdy {{ user.username }}!
 {% else %}
@@ -47,6 +48,6 @@
       <p>visits: {{ visits }}</p>
 <div>
   <img src="{% static "images/rango.jpg" %}" alt="Picture of Rango" />
-  
+
 </div>
 {% endblock %}
